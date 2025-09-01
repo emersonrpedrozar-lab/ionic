@@ -1,0 +1,45 @@
+import { Injectable } from '@angular/core';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable()
+export class HttpTokenInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (req.url.startsWith(environment.newsApiBase)) {
+      const cloned = req.clone({ setHeaders: { 'X-Api-Key': environment.newsApiKey } });
+      return next.handle(cloned);
+    }
+    return next.handle(req);
+  }
+}
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { StorageProvider } from '../providers/storage.provider';
+
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
+  constructor(private storage: StorageProvider, private router: Router) {}
+  async canActivate(): Promise<boolean> {
+    const user = await this.storage.get<any>('user');
+    if (user) return true;
+    await this.router.navigateByUrl('/login', { replaceUrl: true });
+    return false;
+  }
+}
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { StorageProvider } from '../providers/storage.provider';
+
+@Injectable({ providedIn: 'root' })
+export class IsLoggedGuard implements CanActivate {
+  constructor(private storage: StorageProvider, private router: Router) {}
+  async canActivate(): Promise<boolean> {
+    const user = await this.storage.get<any>('user');
+    if (user) {
+      await this.router.navigateByUrl('/home', { replaceUrl: true });
+      return false;
+    }
+    return true;
+  }
+}
