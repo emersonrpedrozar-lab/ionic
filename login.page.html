@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+    <!-- Email -->
+    <app-input
+      type="email"
+      placeholder="Correo electrónico"
+      formControlName="email">
+    </app-input>
+
+    <!-- Password -->
+    <app-input
+      type="password"
+      placeholder="Contraseña"
+      formControlName="password">
+    </app-input>
+
+    <!-- Botón login -->
+    <app-button type="submit" text="Iniciar sesión"></app-button>
+
+  </form>
+
+  <div class="register-link">
+    <p>
+      ¿No tienes cuenta?
+      <app-link text="Regístrate aquí" (click)="goToRegister()"></app-link>
+    </p>
+  </div>
+
+</ion-content>
